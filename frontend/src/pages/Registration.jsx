@@ -9,6 +9,8 @@ import { FaEyeSlash } from "react-icons/fa";
 import { authDataContext } from '../context/AuthContext';
 
 import axios from "axios"
+import { signInWithPopup } from 'firebase/auth';
+import {auth , provider} from '../../utils/Firbase';
 
 function Registration(){
 
@@ -37,6 +39,24 @@ function Registration(){
             console.log(error)
         }
     }
+
+
+    const googleSignup = async () =>{
+        try {
+            const response = await signInWithPopup(auth , provider)
+
+            let user = response.user
+            let name = user.displayName ;
+            let email = user.email ;
+
+
+            const result = await axios.post(serverUrl+"/api/auth/googlelogin",{name , email},{withCredentials:true})
+            console.log(result.data)
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <div className='w-[100vw] h-[100vh] bg-gradient-to-t from-[#141414] to-[#0c2025] text-[white] flex flex-col items-center justify-start'>
             {/* when we click on the logo of one cart or on title we navigate on home page  */}
@@ -57,7 +77,7 @@ function Registration(){
 
 
                 <form action="" onSubmit={handleSignup} className='w-[90%] h-[90%] flex flex-col items-center justify-start gap-[20px]'>
-                    <div className='w-[90%] h-[50px] bg-[#42656cae] rounded-lg flex items-center justify-center gap-[10px] py-[20px] cursor-pointer'>
+                    <div className='w-[90%] h-[50px] bg-[#42656cae] rounded-lg flex items-center justify-center gap-[10px] py-[20px] cursor-pointer' onClick={googleSignup}>
 
 
                        <img src={google} alt="" className='w-[20px]' /> Registration with Google

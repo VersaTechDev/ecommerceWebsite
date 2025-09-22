@@ -1,26 +1,33 @@
 import mongoose from "mongoose";
 
-// create a schema 
 const userSchema = new mongoose.Schema({
-    name:{
-        type: String , 
-        required : true 
+    name: {
+        type: String,
+        required: true
     }, 
-    email:{
-        type: String , 
-        required : true ,
-        unique: true // this is using because user can not use same gmail to create multiple account 
+    email: {
+        type: String,
+        required: true,
+        unique: true // prevent duplicate emails
     }, 
-    password :{
-        type : String , 
-        required : true 
+    password: {
+        type: String, 
+        required: function() {
+            // password is required only for local users
+            return this.authType === "local";
+        }
     },
-    cartData :{
-        type : Object ,
-        default:{}
+    authType: {
+        type: String,
+        enum: ["local", "google"],
+        default: "local"
+    },
+    cartData: {
+        type: Object,
+        default: {}
     }
-},{timestamps : true , minimize:false})
+}, { timestamps: true, minimize: false });
 
-const User = mongoose.model("user" , userSchema) 
+const User = mongoose.model("User", userSchema);
 
-export default User 
+export default User;
